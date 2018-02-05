@@ -15,6 +15,7 @@ export default Component.extend(PropTypeMixin, {
   propTypes: {
     accept: PropTypes.string,
     hook: PropTypes.string,
+    multiple: PropTypes.bool,
     placeholderText: PropTypes.string
   },
 
@@ -22,6 +23,7 @@ export default Component.extend(PropTypeMixin, {
     return {
       accept: '*',
       hook: 'file-picker',
+      multiple: false,
       placeholderText: 'Drop your file here'
     }
   },

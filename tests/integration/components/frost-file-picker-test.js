@@ -4,6 +4,7 @@ import Ember from 'ember'
 const {$} = Ember
 import {$hook, initialize as initializeHook} from 'ember-hook'
 import {setupComponentTest} from 'ember-mocha'
+import wait from 'ember-test-helpers/wait'
 import hbs from 'htmlbars-inline-precompile'
 import {afterEach, beforeEach, describe, it} from 'mocha'
 import sinon from 'sinon'
@@ -76,14 +77,32 @@ describe('Integration/ Component / frost-file-picker', function () {
           assert.equal(e.target.files[0].type, 'text/plain', 'has a type of text/plain')
           assert.equal(e.target.files[0].name, 'test.txt', 'has the correct name')
         })
+        uploadFileHelper(['test'])
+        return wait()
       })
 
-      it('should render properly', function () {
-        uploadFileHelper(['test'])
+      it('should show file name', function () {
+        expect($hook('my-picker-input')).to.have.value('test.txt')
       })
 
       afterEach(function () {
         $('input').off('change')
+      })
+
+      describe('when uploading a second file', function () {
+        beforeEach(function () {
+          $('input').off('change')
+          $('input').on('change', function (e) {
+            assert.equal(e.target.files[0].type, 'text/plain', 'has a type of text/plain')
+            assert.equal(e.target.files[0].name, 'test2.txt', 'has the correct name')
+          })
+          uploadFileHelper(['test2'])
+          return wait()
+        })
+
+        it('should only show second file name', function () {
+          expect($hook('my-picker-input')).to.have.value('test2.txt')
+        })
       })
     })
   })
